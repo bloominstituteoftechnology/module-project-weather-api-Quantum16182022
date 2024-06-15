@@ -1,3 +1,5 @@
+const { default: axios } = require("axios")
+
 async function moduleProject4() {
 
   // 👇 WORK WORK BELOW THIS LINE 👇
@@ -15,7 +17,63 @@ async function moduleProject4() {
   ]
 
   // 👉 Tasks 1 - 5 go here
+  document.querySelector('#weatherWidget').style.display ='none'
+  document.querySelector('#citySelect').addEventListener('change', async evt => {
+    console.log('selection changed')
+    try {document.querySelector('#citySelect').setAttribute('disabled', 'disabled')
+        document.querySelector('#weatherWidget').style.display = 'none'
+        document.querySelector('.info').textContent = 'Fetching weather data ...'
 
+        console.log(evt.target.value)
+        let city = evt.target.value
+        let url =`http://localhost:3003/api/weather?city=${city}`
+        
+        const res = await axios.get(url)
+
+        document.querySelector('#weatherWidget').style.display = 'block'
+        document.querySelector ('.info').textContent =''
+        evt.target.removeAttribute('disabled')
+        
+        let (data) = res
+
+        document.querySelector('#apparenttemp div:nth-child(2)')
+          .textContent =`${data.current.apparent_temperature}`
+        document.querySelector('#todayDescription')
+          .textContent =descriptions.find(d => d[0] === data.current.weather_descriptions)[1]
+        document.querySelector('#todayStats div:nth-child(1)')
+          .textContent =`${data.current.temperature_min} /${data.current.temperature_max}`
+        document.querySelector('#todayStats div:nth-child(2)')
+          .textContent =`precipitation:${data.current.precipitation_probability * 100}%`
+        document.querySelector('#todayStats div:nth-child(3)')
+          .textContent =`humidity:${data.current.humidity}%`
+        document.querySelector('#todayStats div:nth-child(4)')
+          .textContent =`wind:${data.current.wind_speed}m/s`
+
+
+        data.forecast.daily.forEach((day,idx) => {
+          let card = document.querySelectorAll('.next-day')[idx]
+        });
+
+        let WeekDay = card.children[0]
+        let apparent = card.children[1]
+        let minMax = card.children[2]
+        let precipit = card.children[3]
+    
+        WeekDay.textContent = getWeekDay (Day, Date)
+        apparent.textContent = descriptions.find(d => d[0] === day.weather_descriptions)[1]
+        minMax.textContent = `${day.temperature_min} /${day.temperature_max}`
+        precipit.textContent = `precipitation: ${day.precipitation_probability * 100}%`
+    
+      })
+    
+  }catch (err)
+     console.log('promise rejected with an err.message ...', err.message)
+  }
+  })
+  function getWeekSDay(date) {
+    return date
+  }
+  
   // 👆 WORK WORK ABOVE THIS LINE 👆
 
 }
